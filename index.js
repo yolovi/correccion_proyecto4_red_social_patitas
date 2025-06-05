@@ -9,10 +9,9 @@ dbConnection();
 app.use(express.json());
 
 //RUTAS
+app.use("/post", require("./routes/post"));
 
 //SERVIDOR
 app.listen(PORT, () => {
   console.log(`Server listening on port http://localhost:${PORT}`);
 });
-
-console.log("probando para crear la rama de develop");
