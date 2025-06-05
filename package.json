@@ -1,0 +1,25 @@
+{
+  "name": "mongo_socialnetwork",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1", 
+    "watch": "node --watch index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/palomaceg/Mongo_SocialNetwork.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/palomaceg/Mongo_SocialNetwork/issues"
+  },
+  "homepage": "https://github.com/palomaceg/Mongo_SocialNetwork#readme",
+  "dependencies": {
+    "express": "5.1.0",
+    "mongoose": "8.15.1"
+  }
+}
