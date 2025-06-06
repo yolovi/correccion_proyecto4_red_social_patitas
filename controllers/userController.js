@@ -1,7 +1,11 @@
-//Importar el módulo bcrypt
-const User = require("../models/user");
-// const bcrypt = require("bcryptjs")
 
+//const { JWT_SIGNATURE } = require("../config/keys");
+const User = require("../models/User");
+//Comentar para ver usuario sin bcrypt:
+//const bcrypt = require("bcryptjs")
+//const jwt = require ("jsonwebtoken")
+
+//Descomentar para ver usuario sin bcrypt:
 const UserController = {
   async create(req, res) {
     try {
@@ -15,16 +19,14 @@ const UserController = {
       });
     }
   }
-}
+} 
 
-
-
-
+//USUARIO CON BCRYPT 
 // const UserController = {
 //     async create(requ, res) {
 //         try {
-//             const password = bcrypt.hashSync(req.body.password, 12)
-//             const user = await User.create({ ...req.body, password: password, role: "user" })
+//             const password = await bcrypt.hash(req.body.password, 10)
+//             const user = await User.create({ ...req.body, password: password, role:"user"})
 //             res.status(201).send({
 //                 msg: "Usuario creado con éxito",
 //                 user
@@ -34,27 +36,30 @@ const UserController = {
 //                 msg: "Usuario no se ha podido crear", error
 //             })
 //         }
-//     },
-//     login (req,res){
-//         User.findOne ({
-//             where: {
-//                 email:req.body.email
-//             }
-//         }).then(user => {
-//             if(!user){
-//                 return res.status(400).send({message: "Usuario o contraseña incorrectos"})
-//             }
-//             const isMatch = bcrypt.compareSync(req.body.password, user.password);
-//             if(!isMatch){
-//                 return res.status(400).send({message: "Usuario o contraseña incorrectos"})
-//                 }
-//                 res.send(user)
-//             })
-//         }
-// }
+//     }
+//   }
+  
+    // async xxxx (req,res){
+    //      try {
+    //         const user: await User.findOne({
+    //           email: req.body.email
+    //         })
+    //           const isMatch = bcrypt.compareSync(req.body.password, user.password)
+    //           if(!isMatch) {
+    //             return.res.status(400).send("Corre o contraseña incorrectos")
+    //           }
+    //           const token = jwt.sign({_id:user._id}, JWT_SIGNATURE);
+    //           if (user.token.length > 4 )user.tokens.shift(); //si hay 4 tokens guardados, nos quita el primero en la array
+    //           user.tokens.push(token) //guardar token
+    //           await user.save();
+    //           res.send({message:"Bienvenid@" + user.name, token});
+    //       } catch (error) {
+    //         console.error(error)
+    //         res.status(500)send({
+    //             msg: "Usuario no se ha podido crear", error
+    //         })
 
-
-
-
+    //       }
+    //     }
 
 module.exports = UserController

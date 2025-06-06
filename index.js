@@ -10,12 +10,8 @@ app.use(express.json());
 
 //RUTAS
 app.use("/post", require("./routes/post"));
-app.use("/user",(req, res, next) => {
-  console.log("Petición recibida en /user");
-  next();
-});
-
 app.use("/user", require("./routes/user"));
+
 //SERVIDOR
 app.listen(PORT, () => {
   console.log(`Server listening on port http://localhost:${PORT}`);
