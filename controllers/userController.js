@@ -1,45 +1,44 @@
 
 //const { JWT_SIGNATURE } = require("../config/keys");
 const User = require("../models/User");
-//Comentar para ver usuario sin bcrypt:
-//const bcrypt = require("bcryptjs")
+const bcrypt = require("bcryptjs")
 //const jwt = require ("jsonwebtoken")
 
-//Descomentar para ver usuario sin bcrypt:
-const UserController = {
-  async create(req, res) {
-    try {
-      const user = await User.create(req.body);
-      res.status(201).send({ msg: 'User created', user });
-    } catch (error) {
-      console.error("Error al crear el usuario:", error); 
-      res.status(500).send({
-        msg: "Usuario no se ha podido crear",
-        error: error.message || JSON.stringify(error)
-      });
-    }
-  }
-} 
-
-//USUARIO CON BCRYPT 
+//Usuario sin bcrypt:
 // const UserController = {
-//     async create(requ, res) {
-//         try {
-//             const password = await bcrypt.hash(req.body.password, 10)
-//             const user = await User.create({ ...req.body, password: password, role:"user"})
-//             res.status(201).send({
-//                 msg: "Usuario creado con éxito",
-//                 user
-//             })
-//         } catch (error) {
-//             res.status(500).send({
-//                 msg: "Usuario no se ha podido crear", error
-//             })
-//         }
+//   async create(req, res) {
+//     try {
+//       const user = await User.create(req.body);
+//       res.status(201).send({ msg: 'User created', user });
+//     } catch (error) {
+//       console.error("Error al crear el usuario:", error); 
+//       res.status(500).send({
+//         msg: "Usuario no se ha podido crear",
+//         error: error.message || JSON.stringify(error)
+//       });
 //     }
 //   }
+// } 
+
+//USUARIO CON BCRYPT:
+const UserController = {
+    async create(req, res) {
+        try {
+            const password = await bcrypt.hash(req.body.password, 10)
+            const user = await User.create({ ...req.body, password: password, role:"user"})
+            res.status(201).send({
+                msg: "Usuario creado con éxito",
+                user
+            })
+        } catch (error) {
+            res.status(500).send({
+                msg: "Usuario no se ha podido crear", error
+            })
+        }
+    },
+  }
   
-    // async xxxx (req,res){
+    // async login (req,res){
     //      try {
     //         const user: await User.findOne({
     //           email: req.body.email
