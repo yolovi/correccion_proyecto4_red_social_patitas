@@ -1,0 +1,57 @@
+const Post = require("../models/Post");
+const Comment = require("../models/Comment");
+
+const CommentController = {
+  async create(req, res) {
+    try {
+      const comment = await Comment.create(req.body);
+
+      await Post.findByIdAndUpdate(comment.postId, {
+        $push: { comments: comment._id },
+      });
+      res.status(201).send({ msg: "Comentario creado con exito", comment });
+    } catch (error) {
+      res
+        .status(500)
+        .send({ message: "Ha habido un problema al crear tu comentario" });
+    }
+  },
+  async getAll(req, res) {
+    try {
+      const comments = await Comment.find();
+      res.status(200).send(comments);
+    } catch (error) {
+      res.status(500).send({
+        message: "Ha habido un problema al consultar los comentarios",
+      });
+    }
+  },
+  async update(req, res) {
+    try {
+      const comment = await Comment.findByIdAndUpdate(
+        req.params._id,
+        req.body,
+        { new: true }
+      );
+      res.send({ message: "Comentario actualizado correctamente", comment });
+    } catch (error) {
+      console.error(error);
+      res
+        .status(500)
+        .send({ message: "Ha habido un problema al actualizar el comentario" });
+    }
+  },
+  async delete(req, res) {
+    try {
+      const comment = await Comment.findByIdAndDelete(req.params._id);
+      res.send({ message: "Comentario eliminado", comment });
+    } catch (error) {
+      console.error(error);
+      res
+        .status(500)
+        .send({ message: "Ha habido un problema al eliminar el comentario" });
+    }
+  },
+};
+
+module.exports = CommentController;
