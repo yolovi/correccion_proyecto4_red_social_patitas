@@ -44,6 +44,19 @@ const PostController = {
             res.status(500).send({ message: 'Ha habido un problema al cargar el post' })
         }
     },
+     async getProductsByName(req, res) {
+         try {
+             if (req.params.title.length > 20) {
+                 return res.status(400).send('Búsqueda demasiado larga')
+             }
+             const post = new RegExp(req.params.title, "i");
+             const posts = await Post.find({ title: post });
+             res.send(posts);
+         } catch (error) {
+             console.log(error);
+             res.status(500).send({ message: 'Ha habido un problema al traer los posts' })
+         }
+     }
 
 };
 
