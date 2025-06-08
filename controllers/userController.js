@@ -3,22 +3,6 @@ const User = require("../models/User");
 const bcrypt = require("bcryptjs")
 const jwt = require("jsonwebtoken")
 
-//Usuario sin bcrypt:
-// const UserController = {
-//   async create(req, res) {
-//     try {
-//       const user = await User.create(req.body);
-//       res.status(201).send({ msg: 'User created', user });
-//     } catch (error) {
-//       console.error("Error al crear el usuario:", error); 
-//       res.status(500).send({
-//         msg: "Usuario no se ha podido crear",
-//         error: error.message || JSON.stringify(error)
-//       });
-//     }
-//   }
-// } 
-
 //USUARIO CON BCRYPT:
 const UserController = {
   async create(req, res) {
@@ -46,11 +30,11 @@ const UserController = {
       if (!isMatch) {
         return res.status(400).send("Correo o contraseña incorrectos")
       }
-      const token = jwt.sign({_id: user._id }, JWT_SIGNATURE);
+      const token = jwt.sign({ _id: user._id }, JWT_SIGNATURE);
       if (user.tokens.length > 4) user.tokens.shift(); //si hay 4 tokens guardados, nos quita el primero en la array
-      user.tokens.push({token}) //guardar token
+      user.tokens.push({ token }) //guardar token
       await user.save();
-      res.send({ message: "¡Bienvenid@!Has finalizado con éxito tu log in" + user.name, token });
+      res.send({ message: "¡Bienvenid@!Has finalizado con éxito tu log in " + user.name, token });
     } catch (error) {
       console.error("Error al iniciar sesion", error)
       res.status(500).send({
@@ -58,20 +42,6 @@ const UserController = {
       })
     }
   },
-  //     async logout(req, res) {
-  //     try {
-  //       await User.findByIdAndUpdate(req.user._id, {
-  //         $pull: {tokens: req.headers.authorization},
-  //       });
-  //       res.send({message: "Te has desconectado con éxito"});
-  //     } catch (error) {
-  //       console.error("Error en logout", error);
-  //       res.status(500).send({
-  //         message: "Hubo un problema al desconectar al usuario",
-  //       });
-  //     }
-  //   }
-  // };
 
   // async logout (req, res) {
   //     try {
@@ -100,28 +70,28 @@ const UserController = {
   //   }
 
   async logout(req, res) {
-  try {
-    // Ya tienes req.user y req.token gracias al middleware
-    if (!req.user || !req.token) {
-      return res.status(401).send({ message: "No autorizado" });
+    try {
+      // Ya tienes req.user y req.token gracias al middleware
+      if (!req.user || !req.token) {
+        return res.status(401).send({ message: "No autorizado" });
+      }
+
+      // Elimina el token específico del array de tokens del usuario
+      await User.findByIdAndUpdate(
+        req.user._id,
+        { $pull: { tokens: { token: req.token } } },
+        { new: true }
+      );
+
+      res.send({ msg: "Desconectado con éxito" });
+    } catch (error) {
+      console.error("Error en logout:", error);
+      res.status(500).send({
+        msg: "Hubo un problema al intentar desconectar al usuario",
+        error: error.message,
+      })
     }
-
-    // Elimina el token específico del array de tokens del usuario
-    await User.findByIdAndUpdate(
-      req.user._id,
-      { $pull: { tokens: { token: req.token } } },
-      { new: true }
-    );
-
-    res.send({ msg: "Desconectado con éxito" });
-  } catch (error) {
-    console.error("Error en logout:", error);
-    res.status(500).send({
-      msg: "Hubo un problema al intentar desconectar al usuario",
-      error: error.message,
-    })
   }
 }
-}
 
-  module.exports = UserController
+module.exports = UserController
