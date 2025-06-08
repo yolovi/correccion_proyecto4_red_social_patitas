@@ -43,6 +43,7 @@ const UserController = {
     }
   },
 
+  //LOGOUT DIAPOSITIVAS
   // async logout (req, res) {
   //     try {
   //       if (!req.user) {
@@ -71,15 +72,14 @@ const UserController = {
 
   async logout(req, res) {
     try {
-      // Ya tienes req.user y req.token gracias al middleware
-      if (!req.user || !req.token) {
+      if (!req.user || !req.token) { //req.user debe existir. El usuario tiene que estar autenticado.
         return res.status(401).send({ message: "No autorizado" });
       }
 
-      // Elimina el token específico del array de tokens del usuario
+      
       await User.findByIdAndUpdate(
         req.user._id,
-        { $pull: { tokens: { token: req.token } } },
+        { $pull: { tokens: { token: req.token } } }, // Elimina el token específico del array de tokens del usuario
         { new: true }
       );
 

@@ -1,7 +1,9 @@
+
 // const User = require('../models/User.js');
 // const jwt = require('jsonwebtoken');
 // const { JWT_SIGNATURE } = require('../config/keys.js');
 
+//LOGOUT DIAPOSITIVAS
 // const authentication = async (req, res, next) => {
 //     try {
 //         const token = req.headers.authorization;
@@ -29,7 +31,7 @@ const authentication = async (req, res, next) => {
     const authHeader = req.headers.authorization;
 
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      return res.status(401).send({ message: 'Token no proporcionado o formato incorrecto' });
+      return res.status(401).send({ message: 'Token no proporcionado o formato incorrecto' }); //evita errores como jwt malformed si el token viene vacío, sin "Bearer" o mal escrito
     }
 
     const token = authHeader.replace('Bearer ', '');
