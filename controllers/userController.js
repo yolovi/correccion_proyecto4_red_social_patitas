@@ -58,20 +58,70 @@ const UserController = {
       })
     }
   },
-      async logout(req, res) {
-      try {
-        await User.findByIdAndUpdate(req.user._id, {
-          $pull: { tokens: req.headers.authorization },
-        });
-        res.send({ message: "Desconectado con éxito" });
-      } catch (error) {
-        console.error(error);
-        res.status(500).send({
-          message: "Hubo un problema al intentar desconectar al usuario",
-        });
-      }
-    }
-  };
+  //     async logout(req, res) {
+  //     try {
+  //       await User.findByIdAndUpdate(req.user._id, {
+  //         $pull: {tokens: req.headers.authorization},
+  //       });
+  //       res.send({message: "Te has desconectado con éxito"});
+  //     } catch (error) {
+  //       console.error("Error en logout", error);
+  //       res.status(500).send({
+  //         message: "Hubo un problema al desconectar al usuario",
+  //       });
+  //     }
+  //   }
+  // };
 
+  // async logout (req, res) {
+  //     try {
+  //       if (!req.user) {
+  //         return res.status(401).send ({message:"No autorizado"}) //req.user debe existir. El usuario tiene que estar autenticado.
+  //       }
+  //       const token = req.headers.authorization?.replace('Bearer ', ''); // Extrae el token del header (eliminando "Bearer si existe)
+  //       if (!token) {
+  //         return res.status(400).send ({msg: "Token no proporcionado"});
+  //       }
+  //       //Elimina el token del array "tokens" del usuario
+  //       await User.findByIdAndUpdate (
+  //         req.user._id,
+  //         { $pull: {tokens: token}},
+  //         {new:true}
+  //       );
+
+  //       res.send ({msg: "Desconectado con éxito"});
+  //     }catch (error) {
+  //       console.error (error);
+  //       res.status (500).send({
+  //         msg:"Hubo un problema al intentar desconectar al usuario",
+  //         error: error.message, });
+  //       }
+  //     },
+  //   }
+
+  async logout(req, res) {
+  try {
+    // Ya tienes req.user y req.token gracias al middleware
+    if (!req.user || !req.token) {
+      return res.status(401).send({ message: "No autorizado" });
+    }
+
+    // Elimina el token específico del array de tokens del usuario
+    await User.findByIdAndUpdate(
+      req.user._id,
+      { $pull: { tokens: { token: req.token } } },
+      { new: true }
+    );
+
+    res.send({ msg: "Desconectado con éxito" });
+  } catch (error) {
+    console.error("Error en logout:", error);
+    res.status(500).send({
+      msg: "Hubo un problema al intentar desconectar al usuario",
+      error: error.message,
+    })
+  }
+}
+}
 
   module.exports = UserController
