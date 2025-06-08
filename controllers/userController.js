@@ -93,16 +93,30 @@ const UserController = {
     }
   },
 
-  //OBTENER POR ID
- async getById(req, res) {
-        try {
-            const userById = await User.findById(req.params._id)
-            res.send(userById)
-        } catch (error) {
-            console.error(error);
-            res.status(500).send({ message: 'Ha habido un problema al traer el usuario por ID' })
-        }
-    },
+  //GET BY ID
+  async getById(req, res) {
+    try {
+      const userById = await User.findById(req.params._id)
+      res.send(userById)
+    } catch (error) {
+      console.error(error);
+      res.status(500).send({ message: 'Ha habido un problema al traer el usuario por ID' })
+    }
+  },
+
+  //GET BY NAME
+  async getUserByName(req, res) {
+    try {
+      const usuarios = await User.find({
+        $text: {
+          $search: req.params.name,
+        },
+      });
+      res.send(usuarios);
+    } catch (error) {
+      console.log(error);
+    }
+  },
 }
 
 module.exports = UserController
