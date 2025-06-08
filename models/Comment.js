@@ -4,9 +4,11 @@ const ObjectId = mongoose.SchemaTypes.ObjectId;
 const CommentSchema = new mongoose.Schema(
   {
     text: String,
-    postId: {
+    postId: { type: ObjectId, ref: "Post" },
+    likes: [{ type: ObjectId, ref: "User" }],
+    user: {
       type: ObjectId,
-      ref: "Post",
+      ref: "User",
     },
   },
   { timestamps: true }

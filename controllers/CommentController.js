@@ -18,7 +18,10 @@ const CommentController = {
   },
   async getAll(req, res) {
     try {
-      const comments = await Comment.find();
+      const comments = await Comment.find().populate({
+        path: "user",
+        select: "name",
+      });
       res.status(200).send(comments);
     } catch (error) {
       res.status(500).send({
@@ -50,6 +53,25 @@ const CommentController = {
       res
         .status(500)
         .send({ message: "Ha habido un problema al eliminar el comentario" });
+    }
+  },
+  async likeOneComment(req, res) {
+    try {
+      const commentId = req.params._id;
+      const userId = req.body.user;
+      const comment = await Comment.findById(commentId);
+      const hasLiked = comment.likes.some((_id) => _id.toString() === userId);
+      if (hasLiked) {
+        comment.likes.pull(userId);
+      } else {
+        comment.likes.push(userId);
+      }
+      await comment.save();
+      res.status(200).send(comment);
+    } catch (error) {
+      res.status(500).send({
+        message: "Ha habido un problema al dar o quitar el like al post",
+      });
     }
   },
 };

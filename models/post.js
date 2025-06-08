@@ -1,10 +1,16 @@
 const mongoose = require("mongoose");
+const ObjectId = mongoose.SchemaTypes.ObjectId;
 
 const PostSchema = new mongoose.Schema(
   {
     name: String,
     content: String,
-    comments: [{ type: mongoose.Schema.Types.ObjectId, ref: "Comment" }],
+    comments: [{ type: ObjectId, ref: "Comment" }],
+    likes: [{ type: ObjectId, ref: "User" }],
+    user: {
+      type: ObjectId,
+      ref: "User",
+    },
   },
   { timestamps: true }
 );
