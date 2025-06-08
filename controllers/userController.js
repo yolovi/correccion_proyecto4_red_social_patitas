@@ -117,6 +117,17 @@ const UserController = {
       console.log(error);
     }
   },
+  //GET únicamente el usuario conectado
+  async getUsuarioConectado(req, res) {
+    try {
+      res.send({
+        msg: "Perfil del usuario autenticado",
+        user: req.user
+      });
+    } catch (error) {
+      res.status(500).send({ msg: "Error al obtener el perfil", error });
+    }
+  }
 }
 
 module.exports = UserController
