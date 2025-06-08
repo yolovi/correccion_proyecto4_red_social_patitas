@@ -76,7 +76,7 @@ const UserController = {
         return res.status(401).send({ message: "No autorizado" });
       }
 
-      
+
       await User.findByIdAndUpdate(
         req.user._id,
         { $pull: { tokens: { token: req.token } } }, // Elimina el token específico del array de tokens del usuario
@@ -91,7 +91,18 @@ const UserController = {
         error: error.message,
       })
     }
-  }
+  },
+
+  //OBTENER POR ID
+ async getById(req, res) {
+        try {
+            const userById = await User.findById(req.params._id)
+            res.send(userById)
+        } catch (error) {
+            console.error(error);
+            res.status(500).send({ message: 'Ha habido un problema al traer el usuario por ID' })
+        }
+    },
 }
 
 module.exports = UserController
