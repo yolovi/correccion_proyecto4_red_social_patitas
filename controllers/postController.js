@@ -79,7 +79,9 @@ const PostController = {
       await post.save();
       res.status(200).send(post);
     } catch (error) {
-      res.status(500).send({
+      res.status(500)
+      console.error(error)
+      .send({
         message: "Ha habido un problema al dar o quitar el like al post",
       });
     }
