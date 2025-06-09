@@ -49,7 +49,7 @@ const PostController = {
             res.status(500).send({ message: 'Ha habido un problema al eliminar el post' })
         }
     },
-     async getProductsByName(req, res) {
+     async getPostsByName(req, res) {
          try {
              if (req.params.title.length > 20) {
                  return res.status(400).send('Búsqueda demasiado larga')
@@ -61,7 +61,20 @@ const PostController = {
              console.log(error);
              res.status(500).send({ message: 'Ha habido un problema al traer los posts' })
          }
-     }
+     },
+     async getAll(req, res) {
+        try {
+            const { page = 1, limit = 10} = req.query;
+            const post = await Post.find()
+                // .populate("comments.userId")
+                .limit(limit * 1)
+                .skip ((page - 1) * limit);
+            res.status(200).send(post)
+        } catch (error) {
+            console.error(error)
+            res.status(500).send({ message: 'Ha habido un problema al cargar los posts' })
+        }
+    },
 
 };
 
