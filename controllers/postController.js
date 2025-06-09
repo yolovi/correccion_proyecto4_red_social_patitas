@@ -95,10 +95,14 @@ const PostController = {
   },
   async getAll(req, res) {
     try {
+      const { page = 1, limit = 10} = req.query;
       const post = await Post.find().populate({
         path: "user",
         select: "name",
-      });
+      })
+      .limit (limit * 1)
+      .skip((page -1) * limit)
+      
       res.status(200).send(post);
     } catch (error) {
       res.status(500).send({
