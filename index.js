@@ -11,6 +11,7 @@ app.use(express.json());
 //RUTAS
 app.use("/post", require("./routes/post"));
 app.use("/comment", require("./routes/comment"));
+app.use("/user", require("./routes/user"));
 
 //SERVIDOR
 app.listen(PORT, () => {
