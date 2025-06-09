@@ -58,19 +58,28 @@ const CommentController = {
   async likeOneComment(req, res) {
     try {
       const commentId = req.params._id;
-      const userId = req.body.user;
+      const userId = req.user._id;
       const comment = await Comment.findById(commentId);
-      const hasLiked = comment.likes.some((_id) => _id.toString() === userId);
+      const hasLiked = comment.likes.some(
+        (id) => id.toString() === req.user._id.toString()
+      );
       if (hasLiked) {
         comment.likes.pull(userId);
       } else {
         comment.likes.push(userId);
       }
       await comment.save();
-      res.status(200).send(comment);
+      res.status(200).send({
+        message: hasLiked
+          ? "Has quitado tu like del post"
+          : "Has dado like al post",
+        likesCount: comment.likes.length,
+        comment,
+      });
     } catch (error) {
+      console.error("Error en likeOneComment:", error);
       res.status(500).send({
-        message: "Ha habido un problema al dar o quitar el like al post",
+        message: "Ha habido un problema al dar o quitar el like al comentario",
       });
     }
   },
