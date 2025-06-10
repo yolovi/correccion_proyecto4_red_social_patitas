@@ -11,6 +11,9 @@ const PostSchema = new mongoose.Schema(
       type: ObjectId,
       ref: "User",
     },
+    image: {
+      type: String, // Aquí se guarda la ruta del archivo de imagen
+    },
   },
   { timestamps: true }
 );
