@@ -2,6 +2,8 @@ const { JWT_SIGNATURE } = require("../config/keys");
 const User = require("../models/User");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const transporter = require("../config/nodemailer");
+
 //USUARIO CON BCRYPT:
 const UserController = {
   async create(req, res) {
@@ -10,12 +12,21 @@ const UserController = {
       const user = await User.create({
         ...req.body,
         password: password,
+        confirmed: false /*el correo está en la BD como false por defecto, 
+        tras la confirmación, el correo aparece como "true"*/,
         role: "user",
       });
-      res.status(201).send({
-        msg: "Usuario creado con éxito",
-        user,
-      });
+      const url = "http://localhost:8080/user/confirm/" + req.body.email;
+      await transporter.sendMail({
+        to: req.body.email,
+        subject: "Confirme su registro",
+        html: `<h3> Bienvenid@ a Patitas Conectadas, estás a punto de registrarte</h3>
+      <a href = "${url}"> Clica para confirmar tu registro</a>`,
+      }),
+        res.status(201).send({
+          msg: "Comprueba tu correo, te hemos enviado un mensaje",
+          user,
+        });
     } catch (error) {
       res.status(500).send({
         msg: "Usuario no se ha podido crear",
@@ -29,7 +40,19 @@ const UserController = {
       const user = await User.findOne({
         email: req.body.email,
       });
+      //si no se encuentra el usuario no o existe
+      if (!user) {
+        return res.status(400).send("Correo o contraseña incorrectos");
+      }
+
+      //Verificación de usuario confirmado
+      if (!user.confirmed) {
+        return res
+          .status(403)
+          .send("Debes confirmar tu correo antes de iniciar sesión");
+      }
       const isMatch = bcrypt.compareSync(req.body.password, user.password);
+
       if (!isMatch) {
         return res.status(400).send("Correo o contraseña incorrectos");
       }
@@ -130,5 +153,24 @@ const UserController = {
       res.status(500).send({ msg: "Error al obtener el perfil", error });
     }
   },
+  //CONFIRMATION EMAIL
+  async confirm(req, res) {
+    try {
+      const result = await User.updateOne(
+        { email: req.params.email },
+        { $set: { confirmed: true } }
+      );
+
+      if (result.modifiedCount === 0) {
+        return res.status(404).send("Usuario no encontrado o ya confirmado");
+      }
+
+      res.status(200).send("Usuario confirmado con éxito");
+    } catch (error) {
+      console.error(error);
+      res.status(500).send("Error al confirmar el usuario");
+    }
+  },
 };
+
 module.exports = UserController;
