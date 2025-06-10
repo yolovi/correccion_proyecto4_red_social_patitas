@@ -3,10 +3,10 @@ const app = express();
 const PORT = 8080;
 const { dbConnection } = require("./config/config");
 
-dbConnection();
-
 //MIDDLEWARE
 app.use(express.json());
+
+dbConnection();
 
 //RUTAS
 app.use("/post", require("./routes/post"));
