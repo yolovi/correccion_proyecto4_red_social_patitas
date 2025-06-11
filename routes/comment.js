@@ -3,10 +3,10 @@ const {
   isAuthorComment,
   authentication,
 } = require("../middlewares/authentication");
-const upload = require("../middlewares/uploads"); // Asegúrate de que el nombre coincida con tu archivo
+const upload = require("../middlewares/uploads"); 
 const CommentController = require("../controllers/CommentController");
-
 const router = express.Router();
+
 
 router.post("/", authentication, upload.single("image"), CommentController.create);
 router.post("/id/:_id", authentication, CommentController.likeOneComment);

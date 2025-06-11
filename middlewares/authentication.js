@@ -11,12 +11,12 @@ const authentication = async (req, res, next) => {
     if (!authHeader || !authHeader.startsWith("Bearer ")) {
       return res
         .status(401)
-        .send({ message: "Token no proporcionado o formato incorrecto" }); //Esta versión tiene más comprobaciones.evita errores como jwt malformed si el token viene vacío, sin "Bearer" o mal escrito
+        .send({ message: "Token no proporcionado o formato incorrecto" }); 
     }
 
     const token = authHeader.replace("Bearer ", "");
 
-    const payload = jwt.verify(token, JWT_SIGNATURE); // AQUÍ FALLA si el token está mal
+    const payload = jwt.verify(token, JWT_SIGNATURE); 
     const user = await User.findOne({
       _id: payload._id,
       "tokens.token": token,

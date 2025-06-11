@@ -4,15 +4,7 @@ const Comment = require("../models/Comment");
 const CommentController = {
   async create(req, res) {
     try {
-      // Añade la ruta de la imagen si existe (req.file viene de Multer)
-      /* const commentData = {
-        ...req.body,
-        image: req.file ? req.file.path : null,
-      };
-      const comment = await Comment.create(commentData); */
       const comment = await Comment.create({ ...req.body, user: req.user._id, image: req.file ? req.file.path : null,});
-
-      // Actualiza el post con el nuevo comentario
       await Post.findByIdAndUpdate(comment.postId, {
         $push: { comments: comment._id },
       });

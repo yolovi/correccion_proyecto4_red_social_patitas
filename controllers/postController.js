@@ -112,9 +112,12 @@ const PostController = {
       const { page = 1, limit = 10 } = req.query;
       const post = await Post.find()
         .populate({
+        path: "comments",
+        populate: {
           path: "user",
-          select: "name",
-        })
+          select: "text",
+        },
+      })
         .limit(limit * 1)
         .skip((page - 1) * limit);
 
