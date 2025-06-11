@@ -1,59 +1,5 @@
 const Comment = require("../models/Comment.js");
-const Post = require('../models/Post.js')
-
-const isAuthorComment = async (req, res, next) => {
-  try {
-    const comment = await Comment.findById(req.params._id);
-    if (comment.userId.toString() !== req.user._id.toString()) {
-      return res.status(403).send({ message: "Este comentario no es tuyo" });
-    }
-    next();
-  } catch (error) {
-    console.error(error);
-    return res.status(500).send({
-      error,
-      message: "Ha habido un problema al comprobar la autoría del comentario",
-    });
-  }
-};
-
-
-const isAuthorPost = async(req, res, next) => {
-    try {
-        const post = await Post.findById(req.params._id);
-        if (post.userId.toString() !== req.user._id.toString()) {
-            return res.stauts(403).send({message: "Esta publicación no es tuya"});
-        }
-        next();        
-    } catch (error) {
-        console.error(error)
-        return res.status(500).send({ error, message: "Ha habido un problema al verificar que este post es tuyo"})
-    }
-}
-
-// const User = require('../models/User.js');
-// const jwt = require('jsonwebtoken');
-// const { JWT_SIGNATURE } = require('../config/keys.js');
-
-//LOGOUT DIAPOSITIVAS
-// const authentication = async (req, res, next) => {
-//     try {
-//         const token = req.headers.authorization;
-//         const payload = jwt.verify(token, JWT_SIGNATURE);
-//         const user = await User.findOne({ _id: payload._id, tokens: token });
-//         if (!user) {
-//             return res.status(401).send({ message: 'No estas autorizado' });
-//         }
-//         req.user = user;
-//         next();
-//     } catch (error) {
-//         console.error(error)
-//         return res.status(500).send({ error, message: 'Ha habido un problema con el token' })
-//     }
-// }
-
-// module.exports = authentication
-
+const Post = require("../models/Post.js");
 const User = require("../models/User");
 const jwt = require("jsonwebtoken");
 const { JWT_SIGNATURE } = require("../config/keys");
@@ -94,7 +40,36 @@ const authentication = async (req, res, next) => {
   }
 };
 
+const isAuthorComment = async (req, res, next) => {
+  try {
+    const comment = await Comment.findById(req.params._id);
+    if (comment.user.toString() !== req.user._id.toString()) {
+      return res.status(403).send({ message: "Este comentario no es tuyo" });
+    }
+    next();
+  } catch (error) {
+    console.error(error);
+    return res.status(500).send({
+      error,
+      message: "Ha habido un problema al comprobar la autoría del comentario",
+    });
+  }
+};
 
+const isAuthorPost = async (req, res, next) => {
+  try {
+    const post = await Post.findById(req.params._id);
+    if (post.user.toString() !== req.user._id.toString()) {
+      return res.stauts(403).send({ message: "Esta publicación no es tuya" });
+    }
+    next();
+  } catch (error) {
+    console.error(error);
+    return res.status(500).send({
+      error,
+      message: "Ha habido un problema al verificar que este post es tuyo",
+    });
+  }
+};
 
-module.exports = { authentication, isAuthorComment , isAuthorPost };
-
+module.exports = { authentication, isAuthorComment, isAuthorPost };

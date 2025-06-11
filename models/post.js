@@ -3,8 +3,8 @@ const ObjectId = mongoose.SchemaTypes.ObjectId;
 
 const PostSchema = new mongoose.Schema(
   {
-    name: String,
-    content: String,
+    title: String,
+    body: String,
     comments: [{ type: ObjectId, ref: "Comment" }],
     likes: [{ type: ObjectId, ref: "User" }],
     user: {
