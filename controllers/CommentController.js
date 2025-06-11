@@ -4,12 +4,18 @@ const Comment = require("../models/Comment");
 const CommentController = {
   async create(req, res) {
     try {
-      const comment = await Comment.create(req.body);
+      // Añade la ruta de la imagen si existe (req.file viene de Multer)
+      const commentData = {
+        ...req.body,
+        image: req.file ? req.file.path : null,
+      };
+      const comment = await Comment.create(commentData);
 
+      // Actualiza el post con el nuevo comentario
       await Post.findByIdAndUpdate(comment.postId, {
         $push: { comments: comment._id },
       });
-      res.status(201).send({ msg: "Comentario creado con exito", comment });
+      res.status(201).send({ msg: "Comentario creado con éxito", comment });
     } catch (error) {
       res
         .status(500)
@@ -31,9 +37,13 @@ const CommentController = {
   },
   async update(req, res) {
     try {
+      // Si hay imagen, actualiza el campo image con la nueva ruta
+      const updateData = { ...req.body };
+      if (req.file) updateData.image = req.file.path;
+
       const comment = await Comment.findByIdAndUpdate(
         req.params._id,
-        req.body,
+        updateData,
         { new: true }
       );
       res.send({ message: "Comentario actualizado correctamente", comment });
@@ -86,3 +96,4 @@ const CommentController = {
 };
 
 module.exports = CommentController;
+

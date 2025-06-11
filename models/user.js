@@ -22,12 +22,16 @@ const UserSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+     image: [{
+      type: String
+    }],
     tokens: [
       {
         token: {
           type: String,
           required: true,
         },
+       
       },
     ],
   },

@@ -3,17 +3,17 @@ const ObjectId = mongoose.SchemaTypes.ObjectId;
 
 const PostSchema = new mongoose.Schema(
   {
-    name: String,
-    content: String,
+    title: String,
+    body: String,
     comments: [{ type: ObjectId, ref: "Comment" }],
     likes: [{ type: ObjectId, ref: "User" }],
     user: {
       type: ObjectId,
       ref: "User",
     },
-    image: {
-      type: String, // Aquí se guarda la ruta del archivo de imagen
-    },
+    image: [{
+      type: String
+    }]
   },
   { timestamps: true }
 );

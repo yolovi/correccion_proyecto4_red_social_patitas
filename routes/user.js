@@ -1,10 +1,17 @@
 const express = require("express");
 const { authentication } = require("../middlewares/authentication");
+const upload = require("../middlewares/uploads"); // Importa Multer
 const UserController = require("../controllers/userController");
 
 const router = express.Router();
 
-router.post("/", UserController.create);
+// Crear usuario con imagen de perfil
+router.post("/", upload.single("image"), UserController.create);
+
+// Actualizar usuario con imagen de perfil (requiere autenticación)
+router.post('/register', upload.single('profilePicture'),UserController.create)
+
+// Otras rutas
 router.post("/login", UserController.login);
 router.delete("/logout", authentication, UserController.logout);
 router.get("/id/:_id", UserController.getById);

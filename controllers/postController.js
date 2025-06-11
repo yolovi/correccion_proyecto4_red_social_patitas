@@ -8,7 +8,10 @@ const PostController = {
           .status(400)
           .send({ message: "Título y contenido son requeridos" });
       }
-      const post = await Post.create(req.body);
+
+      const imagePath = req.file ? req.file.filename : null;
+
+      const post = await Post.create({...req.body, image: imagePath});
       res.status(201).send(post);
     } catch (error) {
       res

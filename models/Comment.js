@@ -9,7 +9,9 @@ const CommentSchema = new mongoose.Schema(
     user: {
       type: ObjectId,
       ref: "User",
-    },
+    },  image: [{
+      type: String
+    }]
   },
   { timestamps: true }
 );

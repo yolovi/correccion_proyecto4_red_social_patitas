@@ -8,33 +8,66 @@ const transporter = require("../config/nodemailer");
 const UserController = {
   async create(req, res) {
     try {
+      // 1. Hash de la contraseña
       const password = await bcrypt.hash(req.body.password, 10);
-      const user = await User.create({
+
+      // 2. Prepara los datos del usuario
+      const imagePath = req.file ? req.file.filename : null;
+
+      const userData = {
         ...req.body,
         password: password,
-        confirmed: false /*el correo está en la BD como false por defecto, 
-        tras la confirmación, el correo aparece como "true"*/,
+        confirmed: false,
         role: "user",
-      });
-      const url = "http://localhost:8080/user/confirm/" + req.body.email;
+        image: imagePath
+      };
+
+      // // 3. Si se subió un archivo, añade la ruta al objeto userData
+      // if (req.file) {
+      //   userData.profilePicture = req.file.path; // Multer añade la ruta del archivo subido
+      // } else {
+      //   // Opcional: Si no se subió una imagen, podrías querer usar la imagen por defecto
+      //   userData.profilePicture = "uploads/default_avatar.png";
+      // }
+
+      // 4. Crea el usuario en la base de datos
+      console.log("Datos del usuario a crear:", userData); // Para depuración
+      const user = await User.create(userData);
+
+    /*   // 5. Envía el correo de confirmación
+      const url = "http://localhost:8080/user/confirm/" + req.body.email; // Asegúrate de que 8080 es tu puerto frontend o el correcto
       await transporter.sendMail({
+        // Ahora 'transporter' estará definido
         to: req.body.email,
         subject: "Confirme su registro",
         html: `<h3> Bienvenid@ a Patitas Conectadas, estás a punto de registrarte</h3>
-      <a href = "${url}"> Clica para confirmar tu registro</a>`,
-      }),
-        res.status(201).send({
-          msg: "Comprueba tu correo, te hemos enviado un mensaje",
-          user,
-        });
+              <a href = "${url}"> Clica para confirmar tu registro</a>`,
+      }); */
+
+      // 6. Responde con éxito
+      res.status(201).send({
+        msg: "Comprueba tu correo, te hemos enviado un mensaje",
+        user,
+      });
     } catch (error) {
+      // Manejo de errores de Multer (si el error viene del middleware de Multer, tendrá un 'message' específico)
+      if (
+        error.message &&
+        error.message.includes("Solo se permiten imágenes")
+      ) {
+        return res.status(400).send({
+          msg: "Error en la subida de la imagen: " + error.message,
+          error: error.message,
+        });
+      }
+      console.error(error); // Imprime el error completo para depuración
       res.status(500).send({
         msg: "Usuario no se ha podido crear",
-        error,
+        error: error.message, // Envía solo el mensaje del error para mayor claridad al cliente
       });
     }
   },
-  //LOGIN
+  // LOGIN
   async login(req, res) {
     try {
       const user = await User.findOne({
@@ -72,31 +105,6 @@ const UserController = {
       });
     }
   },
-  //LOGOUT DIAPOSITIVAS
-  // async logout (req, res) {
-  //     try {
-  //       if (!req.user) {
-  //         return res.status(401).send ({message:"No autorizado"}) //req.user debe existir. El usuario tiene que estar autenticado.
-  //       }
-  //       const token = req.headers.authorization?.replace('Bearer ', ''); // Extrae el token del header (eliminando "Bearer si existe)
-  //       if (!token) {
-  //         return res.status(400).send ({msg: "Token no proporcionado"});
-  //       }
-  //       //Elimina el token del array "tokens" del usuario
-  //       await User.findByIdAndUpdate (
-  //         req.user._id,
-  //         { $pull: {tokens: token}},
-  //         {new:true}
-  //       );
-  //       res.send ({msg: "Desconectado con éxito"});
-  //     }catch (error) {
-  //       console.error (error);
-  //       res.status (500).send({
-  //         msg:"Hubo un problema al intentar desconectar al usuario",
-  //         error: error.message, });
-  //       }
-  //     },
-  //   }
   async logout(req, res) {
     try {
       if (!req.user || !req.token) {
