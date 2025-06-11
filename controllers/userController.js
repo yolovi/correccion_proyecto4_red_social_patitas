@@ -34,7 +34,7 @@ const UserController = {
       console.log("Datos del usuario a crear:", userData); // Para depuración
       const user = await User.create(userData);
 
-    /*   // 5. Envía el correo de confirmación
+    // 5. Envía el correo de confirmación
       const url = "http://localhost:8080/user/confirm/" + req.body.email; // Asegúrate de que 8080 es tu puerto frontend o el correcto
       await transporter.sendMail({
         // Ahora 'transporter' estará definido
@@ -42,7 +42,7 @@ const UserController = {
         subject: "Confirme su registro",
         html: `<h3> Bienvenid@ a Patitas Conectadas, estás a punto de registrarte</h3>
               <a href = "${url}"> Clica para confirmar tu registro</a>`,
-      }); */
+      }); 
 
       // 6. Responde con éxito
       res.status(201).send({
@@ -103,6 +103,20 @@ const UserController = {
         msg: "No se ha podido hacer el log in",
         error,
       });
+    }
+  },
+   async update(req, res) {
+    try {
+      const updateData = { ...req.body };
+      if (req.file) updateData.image = req.file.path;
+      
+      const user = await User.findByIdAndUpdate(req.params._id, req.body);
+      res.send({ message: "User actualizado correctamente", user });
+    } catch (error) {
+      console.error(error);
+      res
+        .status(500)
+        .send({ message: "Ha habido un problema al actualizar el user" });
     }
   },
   async logout(req, res) {

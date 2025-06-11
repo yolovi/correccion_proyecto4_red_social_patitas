@@ -9,7 +9,7 @@ const router = express.Router();
 router.post("/", upload.single("image"), UserController.create);
 
 // Actualizar usuario con imagen de perfil (requiere autenticación)
-router.post('/register', upload.single('profilePicture'),UserController.create)
+router.put('/id/:_id', upload.single("image"),UserController.update)
 
 // Otras rutas
 router.post("/login", UserController.login);
