@@ -1,9 +1,9 @@
 const Comment = require("../models/Comment.js");
-const Post = require("../models/Post.js");
+const Post = require("../models/post.js");
 const User = require("../models/User");
 require("dotenv").config();
 const jwt = require("jsonwebtoken");
-const JWT_SIGNATURE  = process.env.JWT_SECRET
+const JWT_SIGNATURE = process.env.JWT_SECRET;
 
 const authentication = async (req, res, next) => {
   try {
@@ -12,12 +12,12 @@ const authentication = async (req, res, next) => {
     if (!authHeader || !authHeader.startsWith("Bearer ")) {
       return res
         .status(401)
-        .send({ message: "Token no proporcionado o formato incorrecto" }); 
+        .send({ message: "Token no proporcionado o formato incorrecto" });
     }
 
     const token = authHeader.replace("Bearer ", "");
 
-    const payload = jwt.verify(token, JWT_SIGNATURE); 
+    const payload = jwt.verify(token, JWT_SIGNATURE);
     const user = await User.findOne({
       _id: payload._id,
       "tokens.token": token,
