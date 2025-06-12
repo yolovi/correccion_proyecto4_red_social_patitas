@@ -1,8 +1,9 @@
-const { JWT_SIGNATURE } = require("../config/keys");
+require("dotenv").config();
 const User = require("../models/User");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const transporter = require("../config/nodemailer");
+const JWT_SIGNATURE = process.env.JWT_SECRET;
 
 //USUARIO CON BCRYPT:
 const UserController = {

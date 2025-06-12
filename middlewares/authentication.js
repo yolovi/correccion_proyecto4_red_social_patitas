@@ -1,8 +1,9 @@
 const Comment = require("../models/Comment.js");
 const Post = require("../models/Post.js");
 const User = require("../models/User");
+require("dotenv").config();
 const jwt = require("jsonwebtoken");
-const { JWT_SIGNATURE } = require("../config/keys");
+const JWT_SIGNATURE  = process.env.JWT_SECRET
 
 const authentication = async (req, res, next) => {
   try {
