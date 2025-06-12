@@ -11,13 +11,17 @@ const PostSchema = new mongoose.Schema(
       type: ObjectId,
       ref: "User",
     },
-    image: [{
-      type: String
-    }]
+    image: [
+      {
+        type: String,
+      },
+    ],
   },
   { timestamps: true }
 );
 
-const Post = mongoose.model("Post", PostSchema);
+//const Post = mongoose.model("Post", PostSchema);
+
+const Post = mongoose.models.Post || mongoose.model("Post", PostSchema);
 
 module.exports = Post;
