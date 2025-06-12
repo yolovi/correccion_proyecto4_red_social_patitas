@@ -1,10 +1,14 @@
-const Post = require("../models/Post");
+const Post = require("../models/post");
 const Comment = require("../models/Comment");
 
 const CommentController = {
   async create(req, res) {
     try {
-      const comment = await Comment.create({ ...req.body, user: req.user._id, image: req.file ? req.file.path : null,});
+      const comment = await Comment.create({
+        ...req.body,
+        user: req.user._id,
+        image: req.file ? req.file.path : null,
+      });
       await Post.findByIdAndUpdate(comment.postId, {
         $push: { comments: comment._id },
       });
@@ -31,7 +35,6 @@ const CommentController = {
   },
   async update(req, res) {
     try {
-      
       const updateData = { ...req.body };
       if (req.file) updateData.image = req.file.path;
 
@@ -90,4 +93,3 @@ const CommentController = {
 };
 
 module.exports = CommentController;
-
