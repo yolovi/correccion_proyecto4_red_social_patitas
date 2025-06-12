@@ -1,4 +1,4 @@
-const Post = require("../models/Post");
+const Post = require("../models/post");
 
 const PostController = {
   async create(req, res) {
@@ -11,7 +11,11 @@ const PostController = {
 
       const imagePath = req.file ? req.file.filename : null;
 
-      const post = await Post.create({...req.body, image: imagePath,user: req.user._id });
+      const post = await Post.create({
+        ...req.body,
+        image: imagePath,
+        user: req.user._id,
+      });
       res.status(201).send(post);
     } catch (error) {
       console.log(error);
@@ -40,7 +44,7 @@ const PostController = {
     try {
       const updateData = { ...req.body };
       if (req.file) updateData.image = req.file.path;
-      
+
       const post = await Post.findByIdAndUpdate(req.params._id, req.body, {
         new: true,
         userId: req.user._id,
@@ -112,12 +116,12 @@ const PostController = {
       const { page = 1, limit = 10 } = req.query;
       const post = await Post.find()
         .populate({
-        path: "comments",
-        populate: {
-          path: "user",
-          select: "text",
-        },
-      })
+          path: "comments",
+          populate: {
+            path: "user",
+            select: "text",
+          },
+        })
         .limit(limit * 1)
         .skip((page - 1) * limit);
 
