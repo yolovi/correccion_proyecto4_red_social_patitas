@@ -5,15 +5,18 @@
 ## 🎯 Objetivo del Proyecto
 
 El objetivo de **Patitas Conectadas** es crear un espacio digital seguro y entretenido donde los animales puedan “interactuar” entre sí. A través de esta red social, buscamos fomentar la creatividad y el amor por los animales.
+
 ## 🧰 Tecnologías Usadas
 
 Este proyecto backend fue desarrollado con una serie de herramientas modernas del ecosistema JavaScript, orientadas a la construcción de APIs robustas, seguras y escalables.
 
 ### 📝 Lenguaje y Entorno
+
 - **JavaScript**
 - **Node.js**
 
 ### ⚙️ Framework y Librerías Principales
+
 - **Express 5.1.0** – Framework minimalista para el manejo de rutas y middlewares.
 - **Mongoose 8.15.1** – ODM para **modelar y conectar** con MongoDB.
 - **Bcryptjs 3.0.2** – Para el hash **seguro** de contraseñas.
@@ -22,16 +25,20 @@ Este proyecto backend fue desarrollado con una serie de herramientas modernas de
 - **Nodemailer 7.0.3** – Para el envío de correos electrónicos (por ejemplo, confirmación de registro, notificaciones, etc).
 
 ### 🗄️ Base de Datos
+
 - **MongoDB Atlas** – Base de datos en la nube para almacenar toda la información del sistema (usuarios, publicaciones, comentarios, etc).
 
 ### 🧪 Herramientas de Desarrollo
+
 - **Nodemon 3.1.10** – Recarga automática del servidor durante el desarrollo.
 
 ### 🛡️ Middlewares Personalizados
+
 - **Autenticación** – Verifica que los endpoints protegidos sólo sean accesibles con un token JWT válido. También tenemos la corroboración de identidad ante cambiar foto de perfil, editar (y eliminar) posts y comentarios.
 - **Multer** – Configurado para gestionar la subida de imágenes u otros archivos asociados a publicaciones o perfiles de mascotas (directorio: `/uploads`).
 
 ### 🌱 Variables de Entorno
+
 - [**dotenv**] –Se usará para gestionar **variables sensibles** como claves secretas, URLs de conexión, etc.
 
 ## 🔌 Funcionalidades del Backend
@@ -45,6 +52,7 @@ El backend de **Patitas Conectadas** está estructurado siguiendo el patrón MVC
 Manejo de usuarios del sistema (mascotas). Incluye registro, autenticación y perfil.
 
 #### Endpoints:
+
 - `POST /users/` – Registro de un nuevo usuario (con imagen opcional y confirmación vía email).
 - `POST /users/login` – Inicio de sesión y generación de token JWT.
 - `PUT /users/id/:_id` – Actualización de datos del usuario autenticado.
@@ -61,6 +69,7 @@ Manejo de usuarios del sistema (mascotas). Incluye registro, autenticación y pe
 Gestión de publicaciones de mascotas.
 
 #### Endpoints:
+
 - `POST /posts/` – Crear un post (con imagen opcional).
 - `POST /posts/id/:_id` – Dar "like" a un post.
 - `PUT /posts/id/:_id` – Editar un post (requiere autenticación y ser autor).
@@ -76,11 +85,29 @@ Gestión de publicaciones de mascotas.
 Manejo de comentarios en publicaciones.
 
 #### Endpoints:
+
 - `POST /comments/` – Crear un comentario (con imagen opcional).
 - `POST /comments/id/:_id` – Dar "like" a un comentario.
 - `PUT /comments/id/:_id` – Editar un comentario (requiere autenticación y ser autor).
 - `DELETE /comments/id/:_id` – Eliminar un comentario (requiere autenticación y ser autor).
 - `GET /comments/` – Obtener todos los comentarios.
+
+---
+
+## 📬 Documentación Detallada de la API
+
+Para explorar y probar todos los endpoints disponibles de forma interactiva, puedes acceder a la documentación completa de la API en Postman:
+
+🔗 **[Documentación en Postman](https://documenter.getpostman.com/view/45292031/2sB2x6kWx3)**
+
+### ¿Qué encontrarás en la colección?
+
+- ✅ Descripción detallada de todos los endpoints (`users`, `posts`, `comments`) con sus métodos, parámetros y respuestas esperadas.
+- 📥 Estructura de datos de entrada (`body` JSON), headers y uso de tokens JWT.
+- 📡 Códigos de respuesta HTTP: éxito, errores de validación, autenticación fallida, etc.
+- 🧪 Posibilidad de ejecutar las peticiones directamente desde la interfaz de Postman.
+
+> 💡 _Puedes importar la colección a tu propio espacio de Postman para usarla durante el desarrollo o pruebas._
 
 ---
 
@@ -105,12 +132,15 @@ Representa una mascota dentro de la red social. Incluye su información de auten
   ]
 }
 ```
+
 -🎇**Validaciones**
+
 - `name`: requerido
 - `password`: requerido
 - `email`: requerido y debe ser único
 - `password`: se almacena hasheado utilizando `bcryptjs`
 - Se crea un índice de texto sobre el campo `name` para permitir búsquedas con filtros de texto
+
 ---
 
 - 🔗 **Relaciones:**
@@ -130,17 +160,19 @@ Representa una publicación realizada por una mascota dentro de la red social.
   image: [String]           // Array de URLs de imágenes asociadas
 }
 ```
+
 - 🔗 **Relaciones:**
+
   - `user`: referencia al modelo `User`
   - `comments`: referencias al modelo `Comment`
   - `likes`: referencias al modelo `User`
-  ---
 
-- 🕒 **Timestamps automáticos** 
-Este modelo incluye las marcas de tiempo generadas automáticamente por Mongoose:
+  ***
+
+- 🕒 **Timestamps automáticos**
+  Este modelo incluye las marcas de tiempo generadas automáticamente por Mongoose:
 - `createdAt`
 - `updatedAt`
-
 
 ### 💬 Modelo: Comment
 
@@ -155,23 +187,31 @@ Representa un comentario realizado por una mascota en una publicación.
   image: [String]            // Array de URLs de imágenes opcionales adjuntas al comentario
 }
 ```
+
 -🎇**Validaciones**
+
 - `text`: campo de texto para el contenido del comentario (puede estar acompañado de imágenes)
 - `postId`: obligatorio, referencia válida a un `Post`
 - `user`: obligatorio, referencia válida a un `User`
 - `likes`: array de referencias a `User`, por defecto vacío
 - `image`: opcional, permite múltiples imágenes por comentario
+
 ---
+
 - 🔗 **Relaciones:**
 - `postId`: referencia al modelo `Post`
 - `user`: referencia al modelo `User`
 - `likes`: referencias al modelo `User`
+
 ---
+
 - 🕒 **Timestamps automáticos**
-Este modelo incluye las marcas de tiempo generadas automáticamente por Mongoose:
+  Este modelo incluye las marcas de tiempo generadas automáticamente por Mongoose:
 - `createdAt`
 - `updatedAt`
-----
+
+---
+
 ## 📂 Estructura del Proyecto
 
 A continuación, se muestra la organización de carpetas y archivos principales del backend de **Patitas Conectadas**:
@@ -207,7 +247,9 @@ Patitas-Conectadas/
 ├── package.json             # Dependencias y scripts del proyecto
 └── package-lock.json        # Archivo de bloqueo de versiones de dependencias
 ```
+
 ---
+
 ## 🚀 Cómo Ejecutar el Proyecto
 
 Sigue estos pasos para poner en marcha el backend de **Patitas Conectadas** en tu entorno local.
@@ -218,31 +260,46 @@ Sigue estos pasos para poner en marcha el backend de **Patitas Conectadas** en t
 git clone https://github.com/palomaceg/PatitasConectadas
 cd Patitas-Conectadas
 ```
+
 ### 2. Instalar dependencias
+
 ```bash
 npm install
 ```
+
 ### 3. Configurar variables de entorno
+
 Crea un archivo .env en la raíz del proyecto y define las variables necesarias para la conexión a la base de datos, JWT, y configuración de Nodemailer.
 
 Ejemplo básico:
+
 ```js
-MONGO_URI=tu_uri_de_mongo_atlas
-JWT_SECRET=tu_clave_secreta
-EMAIL_USER=tu_correo_electronico
-EMAIL_PASS=tu_contraseña_de_correo
+MONGO_URI = tu_uri_de_mongo_atlas;
+JWT_SECRET = tu_clave_secreta;
+EMAIL_USER = tu_correo_electronico;
+EMAIL_PASS = tu_contraseña_de_correo;
 ```
+
 ⚠️ Recuerda no subir el archivo .env a tu repositorio (por eso está en .gitignore).
-### 4. Ejecutar el servidor en modo desarrollo
+
+### 4. Ejecutar el servidor en entorno local
+
 Con nodemon para que el servidor se reinicie automáticamente ante cambios:
+
 ```bash
 npm run dev
 ```
+
 ⚠️(Asegúrate de tener nodemon instalado, está listado en las dependencias del proyecto.)
-### 5. El servidor estará corriendo en:
-```bash
-http://localhost:8080
-```
+
+Por defecto, el servidor estará corriendo en:
+🌐 http://localhost:8080 (o el puerto que definas en tu archivo .env)
+
+### 5. Entorno en Producción
+
+El backend también está desplegado en Render, accesible en:  
+🔗 https://patitasconectadas.onrender.com
+
 ### Scripts disponibles en package.json
 
 -`npm start` — Inicia el servidor normalmente.
