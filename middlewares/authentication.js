@@ -1,6 +1,6 @@
 const Comment = require("../models/Comment.js");
 const Post = require("../models/post.js");
-const User = require("../models/User");
+const User = require("../models/user.js");
 require("dotenv").config();
 const jwt = require("jsonwebtoken");
 const JWT_SIGNATURE = process.env.JWT_SECRET;

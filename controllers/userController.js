@@ -1,5 +1,5 @@
 require("dotenv").config();
-const User = require("../models/User");
+const User = require("../models/user");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const transporter = require("../config/nodemailer");
@@ -17,17 +17,17 @@ const UserController = {
         password: password,
         confirmed: false,
         role: "user",
-        image: imagePath
+        image: imagePath,
       };
       console.log("Datos del usuario a crear:", userData); // Para depuración
       const user = await User.create(userData);
-      const url = "http://localhost:8080/user/confirm/" + req.body.email; 
+      const url = "http://localhost:8080/user/confirm/" + req.body.email;
       await transporter.sendMail({
         to: req.body.email,
         subject: "Confirme su registro",
         html: `<h3> Bienvenid@ a Patitas Conectadas, estás a punto de registrarte</h3>
               <a href = "${url}"> Clica para confirmar tu registro</a>`,
-      }); 
+      });
       res.status(201).send({
         msg: "Comprueba tu correo, te hemos enviado un mensaje",
         user,
@@ -70,7 +70,7 @@ const UserController = {
       }
       const token = jwt.sign({ _id: user._id }, JWT_SIGNATURE);
       if (user.tokens.length > 4) user.tokens.shift();
-      user.tokens.push({ token }); 
+      user.tokens.push({ token });
       await user.save();
       res.send({
         message: "¡Bienvenid@!Has finalizado con éxito tu log in " + user.name,
@@ -84,11 +84,11 @@ const UserController = {
       });
     }
   },
-   async update(req, res) {
+  async update(req, res) {
     try {
       const updateData = { ...req.body };
       if (req.file) updateData.image = req.file.path;
-      
+
       const user = await User.findByIdAndUpdate(req.params._id, req.body);
       res.send({ message: "User actualizado correctamente", user });
     } catch (error) {
@@ -105,7 +105,7 @@ const UserController = {
       }
       await User.findByIdAndUpdate(
         req.user._id,
-        { $pull: { tokens: { token: req.token } } }, 
+        { $pull: { tokens: { token: req.token } } },
         { new: true }
       );
       res.send({ msg: "Desconectado con éxito" });
