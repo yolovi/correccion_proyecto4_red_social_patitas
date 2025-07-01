@@ -33,6 +33,12 @@ const CommentController = {
       });
     }
   },
+  /**CORRECCION:
+   * No está mal, pero le añadiría algo más. Si el usuario está viendo un post con muchos comentarios
+   * y solo quiere editar el suyo o borrarlo, tiene que tener una forma de acceso fácil, buscando por ejemplo a partir del
+   * id del post y del usuario. Puede ser con un boton de "mis comentarios", o cambiando el getAll para que muestre
+   * mis comentarios entre los primeros. Pero echo en falta una opción así.
+   */
   async update(req, res) {
     try {
       const updateData = { ...req.body };

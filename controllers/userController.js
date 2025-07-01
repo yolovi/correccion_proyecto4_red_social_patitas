@@ -9,7 +9,15 @@ const JWT_SIGNATURE = process.env.JWT_SECRET;
 const UserController = {
   async create(req, res) {
     try {
+      /**CORRECCION:
+       * no estáis comprobando que el usuario no esté ya registrado, esto es importante que lo comprobemos nosotros
+       * y demos un mensaje personalizado y no dejar que se lance una excepción.
+       */
       const password = await bcrypt.hash(req.body.password, 10);
+      /**CORRECCION:
+       * este operador ternrario está bien, pero tenéis esta otra opción más actual y utilizada:
+       * const imagePath = req.file?.filename || null;
+       */
       const imagePath = req.file ? req.file.filename : null;
 
       const userData = {
@@ -19,8 +27,14 @@ const UserController = {
         role: "user",
         image: imagePath,
       };
+      /**CORRECCION:
+       * estos console log de depuracion hay que quitarlos
+       */
       console.log("Datos del usuario a crear:", userData); // Para depuración
       const user = await User.create(userData);
+      /**CORRECCION:
+       * las url las construimos a partir de una base añadiendo endpoints
+       */
       const url = "http://localhost:8080/user/confirm/" + req.body.email;
       await transporter.sendMail({
         to: req.body.email,
@@ -34,6 +48,10 @@ const UserController = {
       });
     } catch (error) {
       if (
+      /**CORRECCION:
+       *igual que antes, quedaria mas corto y limpio con ?:
+       * error.message?.includes("Solo se permiten imágenes");
+       */
         error.message &&
         error.message.includes("Solo se permiten imágenes")
       ) {

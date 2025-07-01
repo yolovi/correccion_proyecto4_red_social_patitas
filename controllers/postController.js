@@ -37,6 +37,11 @@ const PostController = {
       res.status(200).send(post);
     } catch (error) {
       console.log(error);
+      /**CORRECCION:
+       * no podemos mandar el error como respuesta. Esta llamada se va a consumir, seguramente almacenandose su
+       * respuesta en una variable en el front. Si mandamos el error como respuesta lo va a recibir como si todo
+       * hubiese ido bien, pero no tendrá almacenado el post que buscaba si no un error
+       */
       res.status(500).send(error);
     }
   },
